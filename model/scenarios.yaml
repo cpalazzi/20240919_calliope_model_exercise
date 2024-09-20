@@ -1,0 +1,76 @@
+##
+# Scenarios are optional, named combinations of overrides
+##
+scenarios:
+    # The base scenario contains all techs defined from the queensland report plus tidal and cavern storage
+    # Scenarios must turn off techs or redefine constraints
+    # Scenarios must have a different name to overrides
+    hydrogen_production: ['demand_ammonia_zero']
+    ammonia_production: ['demand_hydrogen_zero']
+    hydrogen_production_hourly: ['demand_ammonia_zero', 'demand_hydrogen_hourly']
+    ammonia_production_hourly: ['demand_ammonia_zero', 'demand_hydrogen_hourly']
+
+
+##
+# Overrides are the building blocks from which scenarios can be defined
+##
+overrides:
+
+    # Demand
+    demand_hydrogen_zero:
+        locations.region1.techs.demand_hydrogen.exists: false
+        # techs.region1.demand_hydrogen.resource: 0
+    demand_ammonia_zero:
+        locations.region1.techs.demand_ammonia.exists: false
+    demand_hydrogen_hourly:
+        techs.demand_hydrogen.constraints.resource: -71347
+    demand_ammonia_hourly:
+        techs.demand_ammonia.resource: -71347
+
+    # Remove resources
+    tidal_zero:
+        locations.region1.techs.tidal.exists: false
+    solar_zero:
+        locations.region1.techs.solar_single_axis.exists: false
+    cavern_zero:
+        locations.region1.techs.cavern_hydrogen_storage.exists: false
+
+    # Operate mode
+    operate:
+        run.mode: operate
+        run.operation:
+            window: 12
+            horizon: 24
+        run.cyclic_storage: false
+        model.subset_time: ['2019-01-01', '2019-03-31']
+        techs:
+            # demand_ammonia:
+            # demand_hydrogen:
+            tidal.constraints.energy_cap_equals: 100000
+            onshore_wind.constraints.energy_cap_equals: 0
+            offshore_wind.constraints.energy_cap_equals: 1000000
+            solar_single_axis.constraints.energy_cap_equals: 0 # 1500
+            battery.constraints.storage_cap_equals: 1000000
+            electrolyser.constraints.energy_cap_equals: 1000000
+            cavern_hydrogen_storage.constraints.storage_cap_equals: 0
+            compressed_hydrogen_storage.constraints.storage_cap_equals: 700000
+            fuel_cell.constraints.energy_cap_equals: 20000
+            haber_and_air_separation.constraints.energy_cap_equals: 630000
+            ammonia_storage.constraints.storage_cap_equals: 999589000
+
+
+    check_feasibility:
+        run:
+            ensure_feasibility: False
+            objective: 'check_feasibility'
+        model:
+            subset_time: '2005-01-04'
+
+    reserve_margin:
+        model:
+            # Model-wide settings for the system-wide reserve margin
+            # Even setting a reserve margin of zero activates the constraint,
+            # forcing enough installed capacity to cover demand in
+            # the maximum demand timestep
+            reserve_margin:
+                power: 0.10  # 10% reserve margin for power

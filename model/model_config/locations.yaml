@@ -1,0 +1,27 @@
+##
+# LOCATIONS
+##
+
+locations:
+
+    region1:
+        coordinates: {lat: -24, lon: 150}
+        techs:
+            demand_ammonia:
+            demand_hydrogen:
+            onshore_wind:
+            offshore_wind:
+            solar_single_axis: # From renewables.ninja at (-24, 150) Banana, QLD
+            battery:
+            electrolyser:
+            # cavern_hydrogen_storage:
+            compressed_hydrogen_storage:
+            fuel_cell:
+            haber_and_air_separation:
+            ammonia_storage:
+
+
+##
+# TRANSMISSION CAPACITIES
+##
+

@@ -1,0 +1,250 @@
+##
+# TECHNOLOGY DEFINITIONS
+##
+
+techs:
+
+    ##
+    # Supply
+    ##
+
+    onshore_wind:
+        essentials:
+            name: 'Onshore Wind'
+            color: '#8ecae6'
+            parent: supply
+            carrier_out: power
+        constraints:
+            resource: file=weather_resource.csv:onshore_wind_power
+            resource_unit: energy_per_cap # energy per capacity, implies amount of capacity to be built is an objective
+            # energy_eff: 0.4
+            # parasitic_eff: 0.9
+            # resource_area_max: inf
+            energy_cap_max: inf # kW
+            lifetime: 20 # years
+        costs:
+            monetary:
+                energy_cap: 1177 # USD/kW (Queensland report 2030)
+                interest_rate: 0.0872 
+                om_annual_investment_fraction: 0.02
+
+    offshore_wind:
+        essentials:
+            name: 'Offshore Wind'
+            color: '#8ecae6'
+            parent: supply
+            carrier_out: power
+        constraints:
+            resource: file=weather_resource.csv:offshore_wind_power
+            resource_unit: energy_per_cap # energy per capacity, implies amount of capacity to be built is an objective
+            # energy_eff: 0.4
+            # parasitic_eff: 0.9
+            # resource_area_max: inf
+            energy_cap_max: inf # kW
+            lifetime: 20 # years
+        costs:
+            monetary:
+                energy_cap: 2842 # USD/kW (Based on Queensland report 2030 and CSIRO interpolation)
+                interest_rate: 0.0872 
+                om_annual_investment_fraction: 0.02
+
+    solar_single_axis:
+        essentials:
+            name: 'Solar single axis'
+            color: '#FDFD96'
+            parent: supply
+            carrier_out: power
+        constraints:
+            resource: file=weather_resource.csv:solar_power
+            resource_unit: energy_per_cap # energy per capacity, implies amount of capacity to be built is an objective
+            # energy_eff: 0.4
+            # parasitic_eff: 0.9
+            # resource_area_max: inf
+            energy_cap_max: inf # kW
+            lifetime: 20 # years
+        costs:
+            monetary:
+                energy_cap: 692 # USD/kW (Based on Queensland report 2030)
+                interest_rate: 0.0872 
+                om_annual_investment_fraction: 0.02
+
+    ##
+    # Storage
+    ##
+    # battery-start
+    battery:
+        essentials:
+            name: 'Battery storage'
+            color: '#3B61E3'
+            parent: storage
+            carrier: power
+        constraints:
+            # energy_cap_max: 1000  # kW
+            storage_cap_max: inf
+            energy_cap_per_storage_cap_max: 4 # kW/kWh charge/discharge rate / capacity
+            energy_eff: 0.95  # 0.95 * 0.95 = 0.9025 round trip efficiency
+            storage_loss: 0  # No loss over time assumed
+            lifetime: 20
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                storage_cap: 439  # USD per kWh storage capacity (Queensland report 2030 battery + interface)
+                om_annual_investment_fraction: 0.02
+    # battery-end
+
+    compressed_hydrogen_storage:
+        essentials:
+            name: 'Compressed hydrogen storage'
+            color: '#afeeee'
+            parent: storage
+            carrier: hydrogen
+        constraints:
+            # energy_cap_max: 1000  # kW
+            storage_cap_max: inf
+            # energy_cap_per_storage_cap_max: 4
+            energy_eff: 0.90  # 0.90 * 1.0 = 0.9 round trip efficiency
+            storage_loss: 0  # Fraction lost per hour
+            lifetime: 20
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                storage_cap: 24  # USD per kWh storage capacity (Queensland report 949 USD/kg/HHV)
+                om_annual_investment_fraction: 0.02
+
+    cavern_hydrogen_storage:
+        essentials:
+            name: 'Cavern hydrogen storage'
+            color: '#afeeee'
+            parent: storage
+            carrier: hydrogen
+        constraints:
+            # energy_cap_max: 1000  # kW
+            storage_cap_max: inf
+            # energy_cap_per_storage_cap_max: 4
+            energy_eff: 0.90  # 0.90 * 1.0 = 0.9 round trip efficiency
+            storage_loss: 0  # Fraction lost per hour
+            lifetime: 20
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                storage_cap: 0.84  # USD per kWh storage capacity (Queensland report 33 USD/kg/HHV)
+                om_annual_investment_fraction: 0.02
+
+    ammonia_storage:
+        essentials:
+            name: 'Ammonia storage'
+            color: '#b2ff9e'
+            parent: storage
+            carrier: ammonia
+        constraints:
+            # energy_cap_max: 1000  # kW
+            storage_cap_max: inf
+            # energy_cap_per_storage_cap_max: 4
+            energy_eff: 1.0 # 0.99  # 0.99 * 1.0 = 0.9 round trip efficiency
+            storage_loss: 0  # Fraction lost per hour
+            lifetime: 20
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                storage_cap: 0.48  # USD per kWh storage capacity (Queensland report 3000 USD/t/HHV)
+                om_annual_investment_fraction: 0.02
+
+    ##
+    # Conversion
+    ##
+
+    electrolyser:
+        essentials:
+            name: 'Electrolyser'
+            color: '#b87333'
+            parent: conversion
+            carrier_in: power
+            carrier_out: hydrogen
+        constraints:
+            energy_eff: 0.79 # HHV/50kWh/kg (from 2030 Queensland report) # Desalination energy demand is 4.2 kWh/t_water (from Queensland report)
+                             # Stochiometry: 9 kg_water per kg_hydrogen
+                             # Real water usage up to 20 kg
+                             # Total energy_eff = 39.4/(50 + 20*0.0042) = 0.79
+            energy_cap_max: inf  # Maximum capacity in kW
+            # energy_ramping: 0.1  # Ramping constraint
+            lifetime: 20
+            # energy_cap_min_use: 0.1 # Minimum capacity required to be used in each time step
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                energy_cap: 683  # USD per kW of capacity (Alkaline electrolyzer from Queensland report 2030)
+                om_annual_investment_fraction: 0.02 
+
+    fuel_cell:
+        essentials:
+            name: 'Fuel cell'
+            color: '#e9c46a'
+            parent: conversion
+            carrier_in: hydrogen
+            carrier_out: power
+        constraints:
+            energy_eff: 0.5  # Efficiency (from Queensland report)
+            energy_cap_max: inf  # Maximum capacity in kW
+            # energy_ramping: 0.1  # Ramping constraint
+            lifetime: 20
+            # energy_cap_min_use: 0.1 # Minimum capacity required to be used in each time step
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                energy_cap: 2277  # USD per kW of capacity (from Queensland report 2030)
+                om_annual_investment_fraction: 0.02
+
+    haber_and_air_separation:
+        essentials:
+            name: 'Haber and air separation'
+            color: '#588157'
+            parent: conversion_plus
+            primary_carrier_in: power
+            carrier_in: power
+            carrier_in_2: hydrogen
+            carrier_out: ammonia
+        constraints:
+            energy_eff: 1.0 # Accounted for by carrier ratios # Corresponds to 0.78 # (ammonia out * HHV) / Energy in (1MWh energy per t ammonia from Queensland report + 177kg hydrogen)
+            energy_cap_max: inf  # Maximum capacity in kW
+            energy_ramping: 0.02  # Ramping constraint
+            carrier_ratios: # out / ratio_out = eff * in * ratio_in. Always check carrier_con results if changing ratios.
+                carrier_in: {power: 1}
+                carrier_in_2: {hydrogen: 6.974} # Assuming 1MWh and 177kg hydrogen per t ammonia (from Queensland report)
+                carrier_out: {ammonia: 6.25}  
+            lifetime: 20
+            energy_cap_min_use: 0.3 # Minimum capacity required to be used in each time step (Queensland report)
+        costs:
+            monetary:
+                interest_rate: 0.0872
+                energy_cap: 931 # USD per kW of power capacity (converted from Queensland report as output ammonia kWh/h)
+                om_annual_investment_fraction: 0.02
+
+    ##
+    # Demand
+    ##
+
+    demand_hydrogen:
+        essentials:
+            name: 'Hydrogen demand'
+            color: '#072486'
+            parent: demand
+            carrier: hydrogen
+        constraints:
+            # resource: file=demand_single.csv:demand # kWh hydrogen
+            # resource: file=demand-2.csv:demand_end
+            resource: -1 # kWh per hour
+
+    demand_ammonia:
+        essentials:
+            name: 'Ammonia demand'
+            color: '#072486'
+            parent: demand
+            carrier: ammonia
+        constraints:
+            # resource: file=demand_single.csv:demand # kWh ammonia
+            # resource: file=demand-2.csv:demand_end
+            resource: -1 # kWh per hour
+    ##
+    # Transmission
+    ##
+

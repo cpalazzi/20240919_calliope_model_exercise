@@ -1,0 +1,57 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux system files
+*~
+
+# Temporary files
+*.swp
+*.swo
+*.tmp
+
+# IDE or Editor specific files
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# JetBrains
+*.iml
+.idea/
+*.iws
+*.ipr
+out/
+
+# Logs and database files
+*.log
+*.sqlite
+*.sql
+
+# Compiled files
+*.class
+*.o
+*.so
+*.dll
+*.exe
+*.pyc
+*.pyo
+*.pyd
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Other OS-generated files
+.Spotlight-V100
+.Trashes
+

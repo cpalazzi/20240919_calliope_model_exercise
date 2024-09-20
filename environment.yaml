@@ -1,0 +1,12 @@
+name: calliope-env
+channels:
+  - https://conda.anaconda.org/gurobi
+  - conda-forge
+dependencies:
+  - calliope
+  - pandas
+  - gurobi
+  - ipykernel
+  - coincbc
+  - plotly
+  - matplotlib
